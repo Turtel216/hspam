@@ -1,4 +1,4 @@
-module MyLib (main') where
+module Preprocess (main') where
 
 import qualified Data.Map as M
 import qualified Data.Text as T

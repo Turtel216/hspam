@@ -1,6 +1,6 @@
 module Main where
 
-import qualified MyLib (main')
+import qualified Preprocess (main')
 
 main :: IO ()
-main = MyLib.main'
+main = Preprocess.main'
