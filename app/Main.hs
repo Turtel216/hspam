@@ -1,6 +1,6 @@
 module Main where
 
-import qualified Preprocess (main')
+import qualified Classifier (main')
 
 main :: IO ()
-main = Preprocess.main'
+main = Classifier.main'

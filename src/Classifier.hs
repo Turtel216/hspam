@@ -1,14 +1,19 @@
-module Preprocess (main') where
+module Classifier (main') where
 
 import qualified Data.Map as M
 import qualified Data.Text as T
+import qualified Data.Text.IO as T
 import Data.Foldable
 import Data.Maybe
+import System.Directory
 
 newtype Bow = Bow { bowToMap :: M.Map T.Text Int } deriving (Show, Read)
 
 wordToBow :: T.Text -> Bow
 wordToBow w = Bow $ M.fromList [(w, 1)]
+
+textToBow :: T.Text -> Bow
+textToBow = foldMap wordToBow . T.words
 
 emptyBow :: Bow
 emptyBow = Bow M.empty
@@ -25,6 +30,21 @@ wordsCount (Bow bow) = sum $ map snd $ M.toList bow
 wordProbability :: T.Text -> Bow -> Float
 wordProbability word bow = fromIntegral n / fromIntegral (wordsCount bow)
   where n = fromMaybe 0 $ M.lookup word $ bowToMap bow
+
+bowFromFile :: FilePath -> IO Bow
+bowFromFile path = textToBow <$> T.readFile path
+
+bowFromFolder :: FilePath -> IO Bow
+bowFromFolder path = do
+  files <- listDirectory path
+  bows <- mapM (\file -> bowFromFile (path <> file)) files
+  return $ fold bows
+
+spamBow :: IO Bow
+spamBow = bowFromFolder "../data/spam/"
+
+hamBow :: IO Bow
+hamBow = bowFromFolder "../data/ham/"
 
 main' :: IO ()
 main' = putStrLn "Hello, Haskell!"
